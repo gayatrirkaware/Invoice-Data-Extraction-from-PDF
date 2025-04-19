@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Get Invoice by Username</title>
+</head>
+<body>
+  <h2>Get Invoice by Username</h2>
+  <input type="text" id="username" placeholder="Enter Username">
+  <button onclick="getInvoice()">Search</button>
+  <p id="response"></p>
+
+  <div id="downloadSection" style="display: none;">
+    <h4>Invoice Found!</h4>
+    <a id="downloadLink" href="#" download>Download Invoice</a>
+  </div>
+
+  <script>
+    async function getInvoice() {
+      const username = document.getElementById("username").value;
+      const res = await fetch(`/get-invoices/${username}`);
+      const data = await res.json();
+      document.getElementById("response").textContent = `${data.status}: ${data.message}`;
+
+      if (data.status === "Successful") {
+        // Now get full invoice to extract invoice ID
+        const resDetail = await fetch(`/invoice-details/${username}`);
+        const detailData = await resDetail.json();
+        if (detailData.status === "Success") {
+          const invoiceId = detailData.message.match(/invoice_id found Successfully/i) ? username : null;
+          if (invoiceId) {
+            document.getElementById("downloadLink").href = `/download-invoice/${invoiceId}`;
+            document.getElementById("downloadSection").style.display = "block";
+          }
+        }
+      } else {
+        document.getElementById("downloadSection").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
