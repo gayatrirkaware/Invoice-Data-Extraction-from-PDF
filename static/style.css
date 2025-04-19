@@ -1,0 +1,10 @@
+body {
+    font-family: Arial;
+    padding: 20px;
+    background: #bb5092;
+  }
+  input, button {
+    padding: 8px;
+    margin: 5px;
+  }
+  
