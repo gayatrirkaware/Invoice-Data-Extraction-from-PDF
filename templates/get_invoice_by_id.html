@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Get Invoice by ID</title>
+</head>
+<body>
+  <h2>Get Invoice Details by Invoice ID</h2>
+  <input type="text" id="invoiceId" placeholder="Enter Invoice ID">
+  <button onclick="getDetails()">Get Details</button>
+  <p id="response"></p>
+
+  <div id="downloadSection" style="display: none;">
+    <h4>Invoice Found!</h4>
+    <a id="downloadLink" href="#" download>Download Invoice</a>
+  </div>
+
+  <script>
+    async function getDetails() {
+      const invoiceId = document.getElementById("invoiceId").value;
+      const res = await fetch(`/invoice-details/${invoiceId}`);
+      const data = await res.json();
+      document.getElementById("response").textContent = `${data.status}: ${data.message}`;
+
+      if (data.status === "Success") {
+        document.getElementById("downloadLink").href = `/download-invoice/${invoiceId}`;
+        document.getElementById("downloadSection").style.display = "block";
+      } else {
+        document.getElementById("downloadSection").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
